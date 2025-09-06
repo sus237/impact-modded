@@ -571,15 +571,14 @@ h.addVelocity(-Math.sin(this.yaw) * g * .5, .1, -Math.cos(this.yaw) * g * .5);
 				else delete tickLoop["NoFall"];
 			});
 
-// ... (AutoFunnyChat module)
-let acbypassPacketInterval, acbypassSyncInterval, acbypassStartTime;
-const acbypass = new Module("ACBypass", function(callback) {
+let disablerPacketInterval, disablerSyncInterval, disablerStartTime;
+const disabler = new Module("Disabler", function(callback) {
     if (callback) {
-        acbypassStartTime = Date.now();
-        tickLoop["ACBypass"] = function() {
+        disablerStartTime = Date.now();
+        tickLoop["Disabler"] = function() {
             if (!player || !game.world) return;
             let lastSync = 0;
-            if (Date.now() - acbypassStartTime < 1500) {
+            if (Date.now() - disablerStartTime < 1500) {
                 const pos = player.pos;
                 const onGround = game.world.getBlockState(new BlockPos(Math.floor(player.pos.x), Math.floor(player.pos.y - 0.1), Math.floor(player.pos.z))).getBlock().material !== Materials.air;
                 ClientSocket.sendPacket(new SPacketPlayerPosLook({
@@ -589,7 +588,7 @@ const acbypass = new Module("ACBypass", function(callback) {
                     onGround: onGround
                 }));
             }
-            if (Date.now() - lastSync > acbypassSyncInterval[1]) {
+            if (Date.now() - lastSync > disablerSyncInterval[1]) {
                 lastSync = Date.now();
                 const pos = player.pos;
                 const onGround = game.world.getBlockState(new BlockPos(Math.floor(player.pos.x), Math.floor(player.pos.y - 0.1), Math.floor(player.pos.z))).getBlock().material !== Materials.air;
@@ -602,16 +601,14 @@ const acbypass = new Module("ACBypass", function(callback) {
             }
         };
     } else {
-        delete tickLoop["ACBypass"];
-        acbypassStartTime = 0;
+        delete tickLoop["Disabler"];
+        disablerStartTime = 0;
     }
 });
-acbypassPacketInterval = acbypass.addoption("PacketInterval", Number, 50, [20, 100, 5]);
-acbypassSyncInterval = acbypass.addoption("SyncInterval", Number, 1000, [500, 5000, 100]);
-acbypassStartTime = acbypass.addoption("StartTime", Number, 0);
+disablerPacketInterval = disabler.addoption("PacketInterval", Number, 50, [20, 100, 5]);
+disablerSyncInterval = disabler.addoption("SyncInterval", Number, 1000, [500, 5000, 100]);
+disablerStartTime = disabler.addoption("StartTime", Number, 0);
 globalThis.${storeName}.modules = modules;
-// ... (rest of the code)
-
 			// WTap
 			new Module("WTap", function() {});
 
