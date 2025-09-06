@@ -571,44 +571,7 @@ h.addVelocity(-Math.sin(this.yaw) * g * .5, .1, -Math.cos(this.yaw) * g * .5);
 				else delete tickLoop["NoFall"];
 			});
 
-let disablerPacketInterval, disablerSyncInterval, disablerStartTime;
-const disabler = new Module("Disabler", function(callback) {
-    if (callback) {
-        disablerStartTime = Date.now();
-        tickLoop["Disabler"] = function() {
-            if (!player || !game.world) return;
-            let lastSync = 0;
-            if (Date.now() - disablerStartTime < 1500) {
-                const pos = player.pos;
-                const onGround = game.world.getBlockState(new BlockPos(Math.floor(player.pos.x), Math.floor(player.pos.y - 0.1), Math.floor(player.pos.z))).getBlock().material !== Materials.air;
-                ClientSocket.sendPacket(new SPacketPlayerPosLook({
-                    pos: { x: Math.round(pos.x * 1000) / 1000, y: Math.round(pos.y * 1000) / 1000, z: Math.round(pos.z * 1000) / 1000 },
-                    yaw: Math.round(player.rotationYaw * 100) / 100,
-                    pitch: Math.max(-90, Math.min(90, Math.round(player.rotationPitch * 100) / 100)),
-                    onGround: onGround
-                }));
-            } // dont mind this
-            if (Date.now() - lastSync > disablerSyncInterval[1]) {
-                lastSync = Date.now();
-                const pos = player.pos;
-                const onGround = game.world.getBlockState(new BlockPos(Math.floor(player.pos.x), Math.floor(player.pos.y - 0.1), Math.floor(player.pos.z))).getBlock().material !== Materials.air;
-                ClientSocket.sendPacket(new SPacketPlayerPosLook({
-                    pos: { x: Math.round(pos.x * 1000) / 1000, y: Math.round(pos.y * 1000) / 1000, z: Math.round(pos.z * 1000) / 1000 },
-                    yaw: Math.round(player.rotationYaw * 100) / 100,
-                    pitch: Math.max(-90, Math.min(90, Math.round(player.rotationPitch * 100) / 100)),
-                    onGround: onGround
-                }));
-            }
-        };
-    } else {
-        delete tickLoop["Disabler"];
-        disablerStartTime = 0;
-    }
-});
-disablerPacketInterval = disabler.addoption("PacketInterval", Number, 50, [20, 100, 5]);
-disablerSyncInterval = disabler.addoption("SyncInterval", Number, 1000, [500, 5000, 100]);
-disablerStartTime = disabler.addoption("StartTime", Number, 0);
-globalThis.${storeName}.modules = modules;
+
 			// WTap
 			new Module("WTap", function() {});
 
