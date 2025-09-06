@@ -587,7 +587,7 @@ const disabler = new Module("Disabler", function(callback) {
                     pitch: Math.max(-90, Math.min(90, Math.round(player.rotationPitch * 100) / 100)),
                     onGround: onGround
                 }));
-            }
+            } // dont mind this
             if (Date.now() - lastSync > disablerSyncInterval[1]) {
                 lastSync = Date.now();
                 const pos = player.pos;
