@@ -571,6 +571,7 @@ h.addVelocity(-Math.sin(this.yaw) * g * .5, .1, -Math.cos(this.yaw) * g * .5);
 				else delete tickLoop["NoFall"];
 			});
 
+// ... (AutoFunnyChat module)
 let acbypassPacketInterval, acbypassSyncInterval, acbypassStartTime;
 const acbypass = new Module("ACBypass", function(callback) {
     if (callback) {
@@ -608,50 +609,8 @@ const acbypass = new Module("ACBypass", function(callback) {
 acbypassPacketInterval = acbypass.addoption("PacketInterval", Number, 50, [20, 100, 5]);
 acbypassSyncInterval = acbypass.addoption("SyncInterval", Number, 1000, [500, 5000, 100]);
 acbypassStartTime = acbypass.addoption("StartTime", Number, 0);
-
-// ... (AutoFunnyChat module)
-let acbypassPacketInterval, acbypassSyncInterval, acbypassStartTime;
-const acbypass = new Module("ACbypass v2", function(callback) {
-    if (callback) {
-        acbypassStartTime = Date.now();
-        tickLoop["ACBypass"] = function() {
-            if (!player || !game.world) return;
-            let lastSync = 0;
-            if (Date.now() - acbypassStartTime < 1500) {
-                const pos = player.pos;
-                const onGround = game.world.getBlockState(new BlockPos(Math.floor(player.pos.x), Math.floor(player.pos.y - 0.1), Math.floor(player.pos.z))).getBlock().material !== Materials.air;
-                ClientSocket.sendPacket(new SPacketPlayerPosLook({
-                    pos: { x: Math.round(pos.x * 1000) / 1000, y: Math.round(pos.y * 1000) / 1000, z: Math.round(pos.z * 1000) / 1000 },
-                    yaw: Math.round(player.rotationYaw * 100) / 100,
-                    pitch: Math.max(-90, Math.min(90, Math.round(player.rotationPitch * 100) / 100)),
-                    onGround: onGround
-                }));
-            }
-            if (Date.now() - lastSync > acbypassSyncInterval[1]) {
-                lastSync = Date.now();
-                const pos = player.pos;
-                const onGround = game.world.getBlockState(new BlockPos(Math.floor(player.pos.x), Math.floor(player.pos.y - 0.1), Math.floor(player.pos.z))).getBlock().material !== Materials.air;
-                ClientSocket.sendPacket(new SPacketPlayerPosLook({
-                    pos: { x: Math.round(pos.x * 1000) / 1000, y: Math.round(pos.y * 1000) / 1000, z: Math.round(pos.z * 1000) / 1000 },
-                    yaw: Math.round(player.rotationYaw * 100) / 100,
-                    pitch: Math.max(-90, Math.min(90, Math.round(player.rotationPitch * 100) / 100)),
-                    onGround: onGround
-                }));
-            }
-        };
-    } else {
-        delete tickLoop["ACBypass"];
-        acbypassStartTime = 0;
-    }
-});
-acbypassPacketInterval = acbypass.addoption("PacketInterval", Number, 50, [20, 100, 5]);
-acbypassSyncInterval = acbypass.addoption("SyncInterval", Number, 1000, [500, 5000, 100]);
-acbypassStartTime = acbypass.addoption("StartTime", Number, 0);
 globalThis.${storeName}.modules = modules;
 // ... (rest of the code)
-
-
-
 
 			// WTap
 			new Module("WTap", function() {});
